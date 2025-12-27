@@ -1,7 +1,7 @@
 #include "Game.h"
 
 Game::Game()
-    : cannon({ 100.0f, 600.0f }) {
+    : cannon({ 75.0f, 650.0f }) {
 }
 
 Game::~Game() {
@@ -22,10 +22,14 @@ void Game::Update(float deltaTime) {
 }
 
 void Game::Draw() const {
+    BeginDrawing();
+
     ClearBackground(RAYWHITE);
+    DrawUI();
 
     cannon.Draw();
-    DrawUI();
+
+    EndDrawing();
 }
 
 void Game::DrawUI() const {

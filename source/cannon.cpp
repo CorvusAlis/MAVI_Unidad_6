@@ -41,7 +41,7 @@ void Cannon::Update(float dt) {
         };
 
         //para que las balas salgan desde la punta del cañon
-        float barrelLength = texture.height;
+        float barrelLength = texture.width * scale;
 
         //spawn de las balas
         Vector2 spawnPos = {
@@ -83,7 +83,7 @@ void Cannon::Draw() const {
     );
 
     //debug pivote de cañon
-    DrawCircleV(position, 4, RED);
+    //DrawCircleV(position, 4, RED);
 
     for (const auto& ball : cannonballs)
         ball.Draw();

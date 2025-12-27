@@ -7,7 +7,8 @@ Texture2D CannonBall::texture = { 0 };
 
 void CannonBall::LoadTextureOnce() {
     if (texture.id == 0) {
-        texture = LoadTexture("assets/img/cannonball.png");
+        texture = LoadTexture("assets/img/cannon_ball.png");
+        TraceLog(LOG_WARNING, "LoadTextureOnce CALLED");
     }
 }
 
@@ -21,7 +22,6 @@ void CannonBall::UnloadTextureOnce() {
 CannonBall::CannonBall(Vector2 startPos, Vector2 initialVelocity)
     : position(startPos), velocity(initialVelocity), active(true) {
 
-    texture = LoadTexture("assets/img/cannonball.png");
 }
 
 void CannonBall::Update(float dt) {
@@ -46,7 +46,8 @@ void CannonBall::Draw() const {
         },
         WHITE
     );
-    DrawCircleV(position, 5, RED);
+    //debug
+    //DrawCircleV(position, 5, RED);
 }
 
 bool CannonBall::IsActive() const {

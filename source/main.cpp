@@ -18,10 +18,11 @@ int main(void)
         float dt = GetFrameTime();
 
         //todos los cambios en los updates y draws se manejan desde game
-        BeginDrawing();
+
         game.Update(dt);
+
         game.Draw();
-        EndDrawing();
+
     }
 
     game.Shutdown();

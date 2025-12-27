@@ -1,7 +1,7 @@
 #pragma once
 #include "raylib.h"
 #include <vector>
-#include "CannonBall.h"
+#include "cannonball.h"
 
 using namespace std;
 
