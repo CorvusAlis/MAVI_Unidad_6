@@ -12,11 +12,13 @@ private:
     //probando static: la textura pertenece a la clase, no a cada instancia particular
     //la textura es un recurso usado por la clase, no cada instancia
     static Texture2D texture;
-    static bool textureLoaded;
 
 public:
+
+    static void LoadTextureOnce();
+    static void UnloadTextureOnce();
+
     CannonBall(Vector2 startPos, Vector2 initialVelocity);
-    ~CannonBall();
 
     void Update(float deltaTime);
     void Draw() const;

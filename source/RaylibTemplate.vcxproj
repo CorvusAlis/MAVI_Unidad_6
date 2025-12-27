@@ -153,14 +153,18 @@ xcopy "$(SolutionDir)..\lib\vld\64-bit\Microsoft.DTfW.DHL.manifest" "$(OutDir)" 
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="basket.cpp" />
     <ClCompile Include="cannon.cpp" />
     <ClCompile Include="cannonball.cpp" />
+    <ClCompile Include="game.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="seagull.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="basket.h" />
     <ClInclude Include="cannon.h" />
     <ClInclude Include="cannonball.h" />
+    <ClInclude Include="game.h" />
     <ClInclude Include="seagull.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

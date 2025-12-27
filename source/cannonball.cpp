@@ -1,21 +1,27 @@
 #include "CannonBall.h"
 
-//al no inicializarlas en el constructor, se evita la carga repetida de la textura (menos uso de memoria)
-Texture2D CannonBall::texture;
-bool CannonBall::textureLoaded = false;
-
 static const float GRAVITY = 500.0f;    //para simular la caida de la bala
+
+//al no inicializarlas en el constructor, se evita la carga repetida de la textura (menos uso de memoria)
+Texture2D CannonBall::texture = { 0 };
+
+void CannonBall::LoadTextureOnce() {
+    if (texture.id == 0) {
+        texture = LoadTexture("assets/img/cannonball.png");
+    }
+}
+
+void CannonBall::UnloadTextureOnce() {
+    if (texture.id != 0) {
+        UnloadTexture(texture);
+        texture = { 0 };
+    }
+}
 
 CannonBall::CannonBall(Vector2 startPos, Vector2 initialVelocity)
     : position(startPos), velocity(initialVelocity), active(true) {
 
-    if (!textureLoaded) {
-        texture = LoadTexture("assets/cannonball.png");
-        textureLoaded = true;
-    }
-}
-
-CannonBall::~CannonBall() {
+    texture = LoadTexture("assets/img/cannonball.png");
 }
 
 void CannonBall::Update(float dt) {
@@ -40,6 +46,7 @@ void CannonBall::Draw() const {
         },
         WHITE
     );
+    DrawCircleV(position, 5, RED);
 }
 
 bool CannonBall::IsActive() const {

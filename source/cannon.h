@@ -8,6 +8,7 @@ using namespace std;
 class Cannon {
 private:
     Vector2 position;
+    float scale;
     float angle;
     float power;
 

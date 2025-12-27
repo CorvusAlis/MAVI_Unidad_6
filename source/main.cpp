@@ -3,22 +3,28 @@
 #endif
 
 #include "raylib.h"
+#include "game.h"
 
 int main(void)
 {
 
-    InitWindow(800, 450, "Salva tus peces!");
+    InitWindow(1280, 720, "Salva tus peces!");
     SetTargetFPS(60);
 
-    while (!WindowShouldClose())
-    {
+    Game game; //se maneja todo desde esta clase
+    game.Init();
+
+    while (!WindowShouldClose()) {
+        float dt = GetFrameTime();
+
+        //todos los cambios en los updates y draws se manejan desde game
         BeginDrawing();
-
-        ClearBackground(SKYBLUE);
-
+        game.Update(dt);
+        game.Draw();
         EndDrawing();
     }
 
+    game.Shutdown();
     CloseWindow();
 
     return 0;

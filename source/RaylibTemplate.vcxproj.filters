@@ -24,8 +24,14 @@
     <ClCompile Include="seagull.cpp">
       <Filter>Resource Files</Filter>
     </ClCompile>
-    <ClCompile Include="cannonball.cpp">
+    <ClCompile Include="basket.cpp">
       <Filter>Resource Files</Filter>
+    </ClCompile>
+    <ClCompile Include="game.cpp">
+      <Filter>Resource Files</Filter>
+    </ClCompile>
+    <ClCompile Include="cannonball.cpp">
+      <Filter>Header Files</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -36,6 +42,12 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="cannonball.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="basket.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="game.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

@@ -2,12 +2,19 @@
 #include "raymath.h"
 #include <cmath>
 
+//para evitar rotar el cañon de mas o de menos - se mueve entre 0 y 90 grados (raylib maneja radianes)
+static const float MIN_ANGLE = -PI / 2.0f;
+static const float MAX_ANGLE = 0.0f;
 
 Cannon::Cannon(Vector2 pos)
-    : position(pos), angle(-PI / 4), power(600.0f) {
+    : position(pos), angle(0.0f), power(600.0f), scale(2.5f) {
 
-    texture = LoadTexture("assets/cannon.png");
-    origin = { 0.0f, texture.height / 2.0f };
+    texture = LoadTexture("assets/img/cannon.png");
+
+    origin = {
+        0.0f, //borde izquierdo
+        texture.height * scale / 2.0f //centro vertical - se escala para mover el pivote con la textura
+    };
 }
 
 Cannon::~Cannon() {
@@ -15,14 +22,17 @@ Cannon::~Cannon() {
 }
 
 void Cannon::Update(float dt) {
+
     //control del angulo de tiro y el poder de disparo
     if (IsKeyDown(KEY_UP)) angle -= 1.5f * dt;
     if (IsKeyDown(KEY_DOWN)) angle += 1.5f * dt;
 
     if (IsKeyDown(KEY_RIGHT)) power += 200.0f * dt;
     if (IsKeyDown(KEY_LEFT)) power -= 200.0f * dt;
-
-    power = Clamp(power, 200.0f, 900.0f);   //funcion Clamp de raymath - limita el valor que se le puede dar al poder de disparo
+    
+    //funcion Clamp de raymath - limite entre dos valores
+    power = Clamp(power, 200.0f, 900.0f);
+    angle = Clamp(angle, MIN_ANGLE, MAX_ANGLE);
 
     if (IsKeyPressed(KEY_SPACE)) {
         Vector2 velocity = {
@@ -30,9 +40,13 @@ void Cannon::Update(float dt) {
             power * sinf(angle)
         };
 
+        //para que las balas salgan desde la punta del cañon
+        float barrelLength = texture.height;
+
+        //spawn de las balas
         Vector2 spawnPos = {
-            position.x + cosf(angle) * texture.width,
-            position.y + sinf(angle) * texture.width
+            position.x + cosf(angle) * barrelLength,
+            position.y + sinf(angle) * barrelLength
         };
 
         //probando uso de vectores: emplace_back coloca un objeto "cannonball" en el vector cannonballs (ver cannon.h)
@@ -45,8 +59,19 @@ void Cannon::Update(float dt) {
 }
 
 void Cannon::Draw() const {
-    Rectangle src = { 0, 0, (float)texture.width, (float)texture.height };
-    Rectangle dst = { position.x, position.y, texture.width, texture.height };
+
+    Rectangle src = {
+        0, 0,
+        (float)texture.width,
+        (float)texture.height
+    };
+
+    Rectangle dst = {
+        position.x,
+        position.y,
+        (float)texture.width * scale,
+        (float)texture.height * scale
+    };
 
     DrawTexturePro(
         texture,
@@ -57,6 +82,9 @@ void Cannon::Draw() const {
         WHITE
     );
 
-    for (const auto& ball : balls)
+    //debug pivote de cañon
+    DrawCircleV(position, 4, RED);
+
+    for (const auto& ball : cannonballs)
         ball.Draw();
 }
