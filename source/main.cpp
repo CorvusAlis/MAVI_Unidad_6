@@ -7,7 +7,7 @@
 int main(void)
 {
 
-    InitWindow(800, 450, "Cañonazos!");
+    InitWindow(800, 450, "Salva tus peces!");
     SetTargetFPS(60);
 
     while (!WindowShouldClose())
