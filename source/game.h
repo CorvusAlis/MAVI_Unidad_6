@@ -2,6 +2,9 @@
 #include "raylib.h"
 #include "cannon.h"
 #include "cannonball.h"
+#include "seagull.h"
+
+using namespace std;
 
 //Probando clase Game (manager de entidades)
 //Esta clase se encargara de hacer todos los draw y updates de la entidades del juego (cañon, balas de cañon, gaviotas, etc)
@@ -12,6 +15,10 @@
 class Game {
 private:
     Cannon cannon;
+    vector<Seagull> seagulls;
+
+    float seagullSpawnTimer;
+    float seagullSpawnInterval;
 
 public:
     Game();
