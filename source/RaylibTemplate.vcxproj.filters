@@ -33,6 +33,9 @@
     <ClCompile Include="cannonball.cpp">
       <Filter>Header Files</Filter>
     </ClCompile>
+    <ClCompile Include="hitbox.cpp">
+      <Filter>Resource Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="cannon.h">
@@ -48,6 +51,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="game.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="hitbox.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
