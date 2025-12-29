@@ -5,7 +5,8 @@
 //tipos de gaviota - definen el comportamiento
 enum class SeagullType {
     SlowFly,
-    FastFly
+    FastFly,
+    DiveBounce  //cae y rebota
 };
 
 class Seagull {
@@ -14,9 +15,11 @@ private:
     SeagullType type;
 
     Vector2 position;
+    Vector2 velocity;
     float scale;
     float speed;
     bool active;
+    bool hasBounced;
 
     int frame;
     float frameTimer;

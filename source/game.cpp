@@ -33,22 +33,39 @@ void Game::Update(float deltaTime) {
     //update de entradas y timers
     cannon.Update(deltaTime);
 
+    // spawn de entidades
     seagullSpawnTimer += deltaTime;
 
-    //spawn de entidades
-    if (seagullSpawnTimer >= seagullSpawnInterval) {
-        seagullSpawnTimer = 0.0f;   //controla la salida de gaviotas cada intervalo de tiempo
+    if (seagullSpawnTimer >= seagullSpawnInterval)
+    {
+        seagullSpawnTimer = 0.0f;   //control del intervalo de aparicion
 
-        float randomY = GetRandomValue(50, 300);    //spawnea una gaviota a distintas alturas
+        //sale uno de los 3 tipos de gaviota de forma aleatoria
+        int randomType = GetRandomValue(0, 2);
+        SeagullType type = static_cast<SeagullType>(randomType);
 
-        SeagullType type =
-            (GetRandomValue(0, 1) == 0) ? SeagullType::SlowFly : SeagullType::FastFly;
+        Vector2 spawnPos;
 
-        //importante - paso la ubicacion y el tipo de la gaviota; el tipo tiene los demas datos
-        seagulls.emplace_back(
-            Vector2{ -50.0f, (float)randomY },
-            type
-        );
+        switch (type)
+        {
+        case SeagullType::SlowFly:
+        case SeagullType::FastFly:
+        {
+            float randomY = GetRandomValue(50, 300);    //aparecen por el costado izquierdo
+            spawnPos = Vector2{ -50.0f, randomY };
+            break;
+        }
+
+        case SeagullType::DiveBounce:
+        {
+            float randomX = GetRandomValue(50, GetScreenWidth() - 50);  //aparecen por la parte superior
+            spawnPos = Vector2{ randomX, -50.0f };
+            break;
+        }
+        }
+
+        // Crear la gaviota
+        seagulls.emplace_back(spawnPos, type);
     }
 
     //update de entidades
@@ -56,8 +73,8 @@ void Game::Update(float deltaTime) {
     for (auto& g : seagulls)
         g.Update(deltaTime);
 
-    for (auto& b : cannon.GetBullets())
-        b.Update(deltaTime);
+    //for (auto& b : cannon.GetBullets())
+    //    b.Update(deltaTime);
 
     //colisiones
 
@@ -76,7 +93,7 @@ void Game::Update(float deltaTime) {
         }
     }
 
-    //gaviota canasta
+    //gaviota - canasta
     for (auto& g : seagulls)
     {
         if (!g.IsActive()) continue;
