@@ -216,6 +216,11 @@ void Seagull::Draw() const {
     //hitbox.Draw();
 }
 
+void Seagull::SetVelocity(Vector2 newVelocity)
+{
+    velocity = newVelocity;
+}
+
 bool Seagull::IsActive() const { return active; }
 
 void Seagull::Deactivate() { active = false; }

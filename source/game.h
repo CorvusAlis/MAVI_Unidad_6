@@ -7,11 +7,16 @@
 
 using namespace std;
 
-//Probando clase Game (manager de entidades)
-//Esta clase se encargara de hacer todos los draw y updates de la entidades del juego (cañon, balas de cañon, gaviotas, etc)
+//Esta clase se encargara de hacer todos los draw, updates y colisiones de la entidades del juego
+//Maneja la UI y los estados del juego (jugando, victoria/derrota)
 //Maneja la carga y descarga de recursos compartidos (texturas)
 //Se llama desde el main, para mantenerlo limpio y mejorar el encapsulamiento de las clases del proyecto
-//Tambien se encargara de dibujar elementos de UI
+
+enum class GameState
+{
+    Playing,
+    GameOver
+};
 
 class Game {
 private:
@@ -21,6 +26,9 @@ private:
 
     float seagullSpawnTimer;
     float seagullSpawnInterval;
+    int seagullsKilled = 0;
+
+    GameState state;
 
 public:
     Game();
@@ -32,4 +40,8 @@ public:
     void Update(float deltaTime);
     void Draw() const;
     void DrawUI() const;
+
+    void UpdateGameOver();
+    void DrawGameOver() const;
+    void ResetGame();
 };

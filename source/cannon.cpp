@@ -119,6 +119,11 @@ void Cannon::CleanBullets()
     );
 }
 
+void Cannon::Reset()
+{
+    cannonballs.clear();
+}
+
 float Cannon::GetPower() const {
     return power;
 }

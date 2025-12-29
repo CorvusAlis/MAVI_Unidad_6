@@ -21,9 +21,14 @@ public:
     static void UnloadTexturesOnce();
 
     void Draw() const;
+    void Init();
 
     void LoseFish();
     bool IsEmpty() const;
+    void Reset();
+
+    Vector2 GetPosition() const;
+    float GetWidth() const;
 
     const Hitbox& GetHitbox() const;
 };

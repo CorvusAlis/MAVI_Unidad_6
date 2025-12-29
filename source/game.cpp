@@ -1,12 +1,16 @@
 #include "Game.h"
+#include <string>
 
 using namespace std;
+
+static constexpr float BASKET_ATTACK_MARGIN = 50.0f;
 
 Game::Game()
     : cannon({ 75.0f, 650.0f }),
     seagullSpawnTimer(0.0f),
     seagullSpawnInterval(2.0f),
-    basket({ GetScreenWidth() / 2.0f - 64.0f, GetScreenHeight() - 120.f })
+    basket({ GetScreenWidth() / 2.0f - 64.0f, GetScreenHeight() - 120.f }),
+    state(GameState::Playing)
 {
 
 }
@@ -19,6 +23,7 @@ void Game::Init() {
     CannonBall::LoadTextureOnce();
     Seagull::LoadTexturesOnce();
     Basket::LoadTexturesOnce();
+    basket.Init();
 }
 
 void Game::Shutdown() {
@@ -29,6 +34,15 @@ void Game::Shutdown() {
 }
 
 void Game::Update(float deltaTime) {
+
+    //DERRORTA
+    if (state == GameState::GameOver)
+    {
+        UpdateGameOver();
+        return;
+    }
+
+    //JUGANDO
 
     //update de entradas y timers
     cannon.Update(deltaTime);
@@ -46,6 +60,10 @@ void Game::Update(float deltaTime) {
 
         Vector2 spawnPos;
 
+        //para las gaviotas que rebotan
+        Vector2 initialVelocity{ 0.0f, 0.0f };
+        bool needsCustomVelocity = false;
+
         switch (type)
         {
         case SeagullType::SlowFly:
@@ -58,14 +76,42 @@ void Game::Update(float deltaTime) {
 
         case SeagullType::DiveBounce:
         {
-            float randomX = GetRandomValue(50, GetScreenWidth() - 50);  //aparecen por la parte superior
-            spawnPos = Vector2{ randomX, -50.0f };
+            //calculo para que targeteen la canasta
+            float basketCenterX = basket.GetPosition().x + basket.GetWidth() * 0.5f;
+
+            float minAttackX = basketCenterX - BASKET_ATTACK_MARGIN;
+            float maxAttackX = basketCenterX + BASKET_ATTACK_MARGIN;
+
+            float spawnX = GetRandomValue(     //mejora para acotar la zona de spawn
+                (int)minAttackX,
+                (int)maxAttackX
+            );
+
+            spawnPos = Vector2{ spawnX, -50.0f };
+
+            const float AIM_ERROR = 10.0f;
+            float targetX = basketCenterX + GetRandomValue(-AIM_ERROR, AIM_ERROR);  
+
+            float dirX = targetX - spawnX;
+
+            initialVelocity = {
+                dirX * 1.2f,
+                280.0f
+            };
+
+            needsCustomVelocity = true; //luego se usa para ajustar
             break;
         }
         }
 
         // Crear la gaviota
         seagulls.emplace_back(spawnPos, type);
+
+        //para la gaviota que rebota, se setea la velocidad
+        if (needsCustomVelocity)
+        {
+            seagulls.back().SetVelocity(initialVelocity);
+        }
     }
 
     //update de entidades
@@ -88,6 +134,9 @@ void Game::Update(float deltaTime) {
             if (b.GetHitbox().Intersectan(g.GetHitbox())) {
                 b.Deactivate();
                 g.Deactivate();
+
+                seagullsKilled++;
+
                 break; //la bala ya no puede colisionar más
             }
         }
@@ -118,6 +167,12 @@ void Game::Update(float deltaTime) {
         seagulls.end()
     );
 
+    //control de vidas y derrota
+    if (basket.IsEmpty())
+    {
+        state = GameState::GameOver;
+    }
+
 }
 
 void Game::Draw() const {
@@ -126,11 +181,19 @@ void Game::Draw() const {
     ClearBackground(RAYWHITE);
     DrawUI();
 
-    cannon.Draw();
-    basket.Draw();
+    if (state == GameState::Playing)
+    {
+        DrawUI();
+        cannon.Draw();
+        basket.Draw();
 
-    for (const auto& g : seagulls)
-        g.Draw();
+        for (const auto& g : seagulls)
+            g.Draw();
+    }
+    else
+    {
+        DrawGameOver();
+    }
 
     EndDrawing();
 }
@@ -169,4 +232,69 @@ void Game::DrawUI() const {
         20,
         DARKGRAY
     );
+}
+
+void Game::UpdateGameOver()
+{
+    if (IsKeyPressed(KEY_ENTER) || IsMouseButtonPressed(MOUSE_BUTTON_LEFT))
+    {
+        ResetGame();
+        state = GameState::Playing;
+    }
+}
+
+void Game::DrawGameOver() const
+{
+    const char* title = "Te quedaste sin pescado!";
+    string stats = "Abatiste " + to_string(seagullsKilled) + " gaviotas antes de que te robaran todo el pescado.";
+    const char* restart = "Para intentar de nuevo, presiona ENTER o has CLICK";
+
+    int titleSize = 50;
+    int statsSize = 30;
+    int restartSize = 20;
+
+    int centerX = GetScreenWidth() / 2;
+    int centerY = GetScreenHeight() / 2;
+
+    int titleWidth = MeasureText(title, titleSize);
+    int statsWidth = MeasureText(stats.c_str(), statsSize);
+    int restartWidth = MeasureText(restart, restartSize);
+
+    //mensaje derrota
+    DrawText(
+        title,
+        centerX - titleWidth / 2,
+        centerY - 80,
+        titleSize,
+        RED
+    );
+
+    //estadísticas
+    DrawText(
+        stats.c_str(),
+        centerX - statsWidth / 2,
+        centerY - 10,
+        statsSize,
+        GOLD
+    );
+
+    //instrucciones
+    DrawText(
+        restart,
+        centerX - restartWidth / 2,
+        centerY + 40,
+        restartSize,
+        DARKGRAY
+    );
+}
+
+
+void Game::ResetGame()
+{
+    //reseteo al estado inicial del juego
+    seagulls.clear();
+    cannon.Reset();
+    basket.Reset();
+
+    seagullSpawnTimer = 0.0f;
 }

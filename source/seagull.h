@@ -45,5 +45,8 @@ public:
 
     bool IsActive() const;
     void Deactivate();
+
+    void SetVelocity(Vector2 newVelocity);
+
     const Hitbox& GetHitbox() const;
 };

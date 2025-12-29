@@ -28,6 +28,9 @@ public:
     const vector<CannonBall>& GetBullets() const;   //esta version con const se usa solo para ver el estado de las balas
     void CleanBullets();
 
+    void Reset();
+
     float GetPower() const;
     float GetAngle() const;
+
 };

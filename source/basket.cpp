@@ -32,17 +32,6 @@ Basket::Basket(Vector2 pos, float sc)
     hitbox()
 {
     const Texture2D& tex = textures[3];
-
-    hitbox = Hitbox(
-        tex.width * scale * 0.9f,
-        tex.height * scale * 0.9f,
-        {
-            tex.width * scale * 0.05f,
-            tex.height * scale * 0.05f
-        }
-    );
-
-    hitbox.Sincro(position);
 }
 
 void Basket::Draw() const
@@ -70,6 +59,25 @@ void Basket::Draw() const
         0.0f,
         WHITE
     );
+
+    //hitbox.Draw();
+}
+
+void Basket::Init()
+{
+    const Texture2D& tex = textures[3];
+
+    hitbox = Hitbox(
+        tex.width * scale * 0.9f,
+        tex.height * scale * 0.9f,
+        {
+            tex.width * scale * 0.05f,
+            tex.height * scale * 0.05f
+        },
+        true //debug ON
+    );
+
+    hitbox.Sincro(position);
 }
 
 void Basket::LoseFish() //controlo la cantidad de peces
@@ -82,6 +90,14 @@ bool Basket::IsEmpty() const
 {
     return fishes == 0;
 }
+
+void Basket::Reset()
+{
+    fishes = 3;
+}
+
+Vector2 Basket::GetPosition() const { return position; }
+float Basket::GetWidth() const { return textures[fishes].width * scale; }
 
 const Hitbox& Basket::GetHitbox() const
 {
