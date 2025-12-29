@@ -5,7 +5,8 @@ using namespace std;
 Game::Game()
     : cannon({ 75.0f, 650.0f }),
     seagullSpawnTimer(0.0f),
-    seagullSpawnInterval(2.0f)
+    seagullSpawnInterval(2.0f),
+    basket({ GetScreenWidth() / 2.0f - 64.0f, GetScreenHeight() - 120.f })
 {
 
 }
@@ -14,15 +15,17 @@ Game::~Game() {
 }
 
 void Game::Init() {
-    //Carga de recursos (siempre después de InitWindow)
+    //Carga de recursos (siempre después de InitWindow) - NO OLVIDAR
     CannonBall::LoadTextureOnce();
     Seagull::LoadTexturesOnce();
+    Basket::LoadTexturesOnce();
 }
 
 void Game::Shutdown() {
     //Liberación explícita de recursos
     CannonBall::UnloadTextureOnce();
     //Seagull::UnloadTexturesOnce();
+    Basket::UnloadTexturesOnce();
 }
 
 void Game::Update(float deltaTime) {
@@ -58,6 +61,7 @@ void Game::Update(float deltaTime) {
 
     //colisiones
 
+    //bala - gaviota
     for (auto& b : cannon.GetBullets()) {
         if (!b.IsActive()) continue;
 
@@ -69,6 +73,18 @@ void Game::Update(float deltaTime) {
                 g.Deactivate();
                 break; //la bala ya no puede colisionar más
             }
+        }
+    }
+
+    //gaviota canasta
+    for (auto& g : seagulls)
+    {
+        if (!g.IsActive()) continue;
+
+        if (g.GetHitbox().Intersectan(basket.GetHitbox()))
+        {
+            g.Deactivate();
+            basket.LoseFish();
         }
     }
 
@@ -94,6 +110,7 @@ void Game::Draw() const {
     DrawUI();
 
     cannon.Draw();
+    basket.Draw();
 
     for (const auto& g : seagulls)
         g.Draw();

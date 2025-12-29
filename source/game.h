@@ -3,6 +3,7 @@
 #include "cannon.h"
 #include "cannonball.h"
 #include "seagull.h"
+#include "basket.h"
 
 using namespace std;
 
@@ -16,6 +17,7 @@ class Game {
 private:
     Cannon cannon;
     vector<Seagull> seagulls;
+    Basket basket;
 
     float seagullSpawnTimer;
     float seagullSpawnInterval;
