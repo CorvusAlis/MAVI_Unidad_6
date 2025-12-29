@@ -136,8 +136,37 @@ void Game::Draw() const {
 }
 
 void Game::DrawUI() const {
+    //info cañon - barra de potencia                
+    const int barWidth = 200;
+    const int barHeight = 10;
+
+    int barX = 20;
+    int barY = GetScreenHeight() - 30;
+                                            //MAX_POWER en cannon
+    float powerRatio = cannon.GetPower() / 900.0f;
+
+    DrawRectangle(
+        barX,
+        barY,
+        (int)(powerRatio * barWidth),
+        barHeight,
+        RED
+    );
+
+    DrawRectangleLines(
+        barX,
+        barY,
+        barWidth,
+        barHeight,
+        BLACK
+    );
+
+    //instrucciones
     DrawText(
-        "Arriba/Abajo - Angulo de tiro | Izquierda/Derecha - Potencia de disparo | Espacio: Disparar!",
-        20, 20, 15, DARKGRAY
+        "Arriba/Abajo: Angulo | Izquierda/Derecha: Potencia | Espacio: Disparar",
+        20,
+        20,
+        20,
+        DARKGRAY
     );
 }

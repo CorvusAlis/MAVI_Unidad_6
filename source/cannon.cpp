@@ -8,6 +8,10 @@ using namespace std;
 static const float MIN_ANGLE = -PI / 2.0f;
 static const float MAX_ANGLE = 0.0f;
 
+//potencia de disparo
+static const float MIN_POWER = 200.0F;
+static const float MAX_POWER = 900.0f;
+
 Cannon::Cannon(Vector2 pos)
     : position(pos), angle(0.0f), power(600.0f), scale(2.5f) {
 
@@ -33,7 +37,7 @@ void Cannon::Update(float dt) {
     if (IsKeyDown(KEY_LEFT)) power -= 200.0f * dt;
     
     //funcion Clamp de raymath - limite entre dos valores
-    power = Clamp(power, 200.0f, 900.0f);
+    power = Clamp(power, MIN_POWER, MAX_POWER);
     angle = Clamp(angle, MIN_ANGLE, MAX_ANGLE);
 
     if (IsKeyPressed(KEY_SPACE)) {
@@ -113,4 +117,12 @@ void Cannon::CleanBullets()
         ),
         cannonballs.end()
     );
+}
+
+float Cannon::GetPower() const {
+    return power;
+}
+
+float Cannon::GetAngle() const {
+    return angle;
 }
