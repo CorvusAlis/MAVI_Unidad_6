@@ -1,5 +1,7 @@
 #include "Game.h"
 
+using namespace std;
+
 Game::Game()
     : cannon({ 75.0f, 650.0f }),
     seagullSpawnTimer(0.0f),
@@ -25,18 +27,12 @@ void Game::Shutdown() {
 
 void Game::Update(float deltaTime) {
 
+    //update de entradas y timers
     cannon.Update(deltaTime);
-
-    // spawn de prueba
-    //if (IsKeyPressed(KEY_G)) {
-    //    seagulls.emplace_back(
-    //        Vector2{ -50.0f, 100.0f },
-    //        200.0f
-    //    );
-    //}
 
     seagullSpawnTimer += deltaTime;
 
+    //spawn de entidades
     if (seagullSpawnTimer >= seagullSpawnInterval) {
         seagullSpawnTimer = 0.0f;   //controla la salida de gaviotas cada intervalo de tiempo
 
@@ -52,8 +48,42 @@ void Game::Update(float deltaTime) {
         );
     }
 
+    //update de entidades
+
     for (auto& g : seagulls)
         g.Update(deltaTime);
+
+    for (auto& b : cannon.GetBullets())
+        b.Update(deltaTime);
+
+    //colisiones
+
+    for (auto& b : cannon.GetBullets()) {
+        if (!b.IsActive()) continue;
+
+        for (auto& g : seagulls) {
+            if (!g.IsActive()) continue;
+
+            if (b.GetHitbox().Intersectan(g.GetHitbox())) {
+                b.Deactivate();
+                g.Deactivate();
+                break; //la bala ya no puede colisionar más
+            }
+        }
+    }
+
+    //limpio objetos inactivos
+
+    cannon.CleanBullets();
+
+    seagulls.erase(
+        remove_if(
+            seagulls.begin(),
+            seagulls.end(),
+            [](const Seagull& g) { return !g.IsActive(); }
+        ),
+        seagulls.end()
+    );
 
 }
 

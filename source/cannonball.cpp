@@ -20,7 +20,9 @@ void CannonBall::UnloadTextureOnce() {
 }
 
 CannonBall::CannonBall(Vector2 startPos, Vector2 initialVelocity)
-    : position(startPos), velocity(initialVelocity), active(true) {
+    : position(startPos), velocity(initialVelocity), active(true),
+    hitbox(16.0f, 16.0f, { 0, 0 }, false)
+{
 
 }
 
@@ -30,6 +32,8 @@ void CannonBall::Update(float dt) {
     velocity.y += GRAVITY * dt;
     position.x += velocity.x * dt;
     position.y += velocity.y * dt;
+
+    hitbox.Sincro(position);
 
     if (position.y > GetScreenHeight())
         active = false;
@@ -48,8 +52,11 @@ void CannonBall::Draw() const {
     );
     //debug
     //DrawCircleV(position, 5, RED);
+    //hitbox.Draw();
 }
 
-bool CannonBall::IsActive() const {
-    return active;
-}
+bool CannonBall::IsActive() const { return active; }
+
+void CannonBall::Deactivate() { active = false; }
+
+const Hitbox& CannonBall::GetHitbox() const { return hitbox; }

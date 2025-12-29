@@ -1,5 +1,6 @@
 #pragma once
 #include "raylib.h"
+#include "hitbox.h"
 
 using namespace std;
 
@@ -13,6 +14,8 @@ private:
     //la textura es un recurso usado por la clase, no cada instancia
     static Texture2D texture;
 
+    Hitbox hitbox;
+
 public:
 
     static void LoadTextureOnce();
@@ -24,4 +27,6 @@ public:
     void Draw() const;
 
     bool IsActive() const;
+    void Deactivate();
+    const Hitbox& GetHitbox() const;
 };

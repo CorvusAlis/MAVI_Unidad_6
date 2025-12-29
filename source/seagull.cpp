@@ -18,6 +18,17 @@ void Seagull::LoadTexturesOnce() {
     }
 }
 
+void Seagull::UnloadTexturesOnce() {
+    if (slowTexture.id != 0) {
+        UnloadTexture(slowTexture);
+        slowTexture = { 0 };
+    }
+    if (fastTexture.id != 0) {
+        UnloadTexture(fastTexture);
+        fastTexture = { 0 };
+    }
+}
+
 Seagull::Seagull(Vector2 startPos, SeagullType t)
     : type(t),
     position(startPos),
@@ -27,12 +38,14 @@ Seagull::Seagull(Vector2 startPos, SeagullType t)
     frame(0),
     frameTimer(0.0f),
     source{ 0.0f, 0.0f, 32.0f, 16.0f },
-    dest{ startPos.x, startPos.y, 32.0f, 16.0f }
+    dest{ startPos.x, startPos.y, 32.0f, 16.0f },
+    hitbox() //NO TE OLVIDES DE AGREGAR LA HITBOX PANFLINA
 {
     //segun que tipo de gaviota sea, usa los parametros para animacion o img estatica
     switch (type) {
     case SeagullType::SlowFly:
         speed = 150.0f;
+
         source = {
             0.0f,
             0.0f,
@@ -40,16 +53,20 @@ Seagull::Seagull(Vector2 startPos, SeagullType t)
             (float)SLOW_FRAME_HEIGHT
         };
 
-        dest = {
-            position.x,
-            position.y,
-            (float)SLOW_FRAME_WIDTH * scale,
-            (float)SLOW_FRAME_HEIGHT * scale
-        };
+        //hitbox un poco más chica que el sprite
+        hitbox = Hitbox(
+            SLOW_FRAME_WIDTH * scale * 0.8f,
+            SLOW_FRAME_HEIGHT * scale * 0.8f,
+            {
+                SLOW_FRAME_WIDTH * scale * 0.1f,
+                SLOW_FRAME_HEIGHT * scale * 0.1f
+            }
+        );
         break;
 
     case SeagullType::FastFly:
         speed = 350.0f;
+
         source = {
             0.0f,
             0.0f,
@@ -57,17 +74,19 @@ Seagull::Seagull(Vector2 startPos, SeagullType t)
             (float)fastTexture.height
         };
 
-        dest = {
-            position.x,
-            position.y,
-            (float)fastTexture.width * scale,
-            (float)fastTexture.height * scale
-        };
+        hitbox = Hitbox(
+            fastTexture.width * scale * 0.8f,
+            fastTexture.height * scale * 0.8f,
+            {
+                fastTexture.width * scale * 0.1f,
+                fastTexture.height * scale * 0.1f
+            }
+        );
         break;
     }
 
-    source = { 0, 0, 32, 16 };
-    dest = { position.x, position.y, 32, 16 };
+    //sinrcro inicial de hitbox
+    hitbox.Sincro(position);
 }
 
 Seagull::~Seagull() {
@@ -91,8 +110,7 @@ void Seagull::Update(float dt) {
         }
     }
     
-    dest.x = position.x * scale;
-    dest.y = position.y * scale;
+    hitbox.Sincro(position);
 
 }
 
@@ -102,25 +120,14 @@ void Seagull::Draw() const {
     const Texture2D& tex =
         (type == SeagullType::SlowFly) ? slowTexture : fastTexture;
 
-    Rectangle drawSource;
-
-    if (type == SeagullType::SlowFly) {
-        drawSource = source; // spritesheet animado
-    }
-    else {
-        drawSource = {
-            0.0f,
-            0.0f,
-            (float)tex.width,
-            (float)tex.height
-        };
-    }
+    Rectangle drawSource =
+        (type == SeagullType::SlowFly) ? source : Rectangle{ 0, 0, (float)tex.width, (float)tex.height };   //pregunta que tipo de gaviota es y renderiza animacion o dibujo
 
     Rectangle drawDest = {
         position.x,
         position.y,
-        dest.width * scale,
-        dest.height * scale
+        drawSource.width * scale,
+        drawSource.height * scale
     };
 
     DrawTexturePro(
@@ -140,9 +147,12 @@ void Seagull::Draw() const {
     //    (int)dest.height,
     //    RED
     //);
+
+    //hitbox.Draw();
 }
 
+bool Seagull::IsActive() const { return active; }
 
-bool Seagull::IsActive() const {
-    return active;
-}
+void Seagull::Deactivate() { active = false; }
+
+const Hitbox& Seagull::GetHitbox() const { return hitbox; }

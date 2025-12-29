@@ -2,6 +2,8 @@
 #include "raymath.h"
 #include <cmath>
 
+using namespace std;
+
 //para evitar rotar el cañon de mas o de menos - se mueve entre 0 y 90 grados (raylib maneja radianes)
 static const float MIN_ANGLE = -PI / 2.0f;
 static const float MAX_ANGLE = 0.0f;
@@ -87,4 +89,28 @@ void Cannon::Draw() const {
 
     for (const auto& ball : cannonballs)
         ball.Draw();
+}
+
+vector<CannonBall>& Cannon::GetBullets()
+{
+    return cannonballs;
+}
+
+const vector<CannonBall>& Cannon::GetBullets() const
+{
+    return cannonballs;
+}
+
+void Cannon::CleanBullets()
+{
+    cannonballs.erase(
+        remove_if(
+            cannonballs.begin(),
+            cannonballs.end(),
+            [](const CannonBall& b) {
+                return !b.IsActive();
+            }
+        ),
+        cannonballs.end()
+    );
 }

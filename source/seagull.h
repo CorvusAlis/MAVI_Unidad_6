@@ -1,5 +1,6 @@
 #pragma once
 #include "raylib.h"
+#include "hitbox.h"
 
 //tipos de gaviota - definen el comportamiento
 enum class SeagullType {
@@ -27,6 +28,8 @@ private:
     static Texture2D fastTexture;
     static bool texturesLoaded;
 
+    Hitbox hitbox;
+
 public:
     Seagull(Vector2 startPos, SeagullType type);
     ~Seagull();
@@ -38,4 +41,6 @@ public:
     void Draw() const;
 
     bool IsActive() const;
+    void Deactivate();
+    const Hitbox& GetHitbox() const;
 };
