@@ -3,7 +3,7 @@
 
 using namespace std;
 
-static constexpr float BASKET_ATTACK_MARGIN = 50.0f;
+static constexpr float BASKET_ATTACK_MARGIN = 80.0f;
 
 Game::Game()
     : cannon({ 75.0f, 650.0f }),
@@ -296,5 +296,6 @@ void Game::ResetGame()
     cannon.Reset();
     basket.Reset();
 
+    seagullsKilled = 0;
     seagullSpawnTimer = 0.0f;
 }
